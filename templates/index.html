@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Sentiment Analyzer</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<!-- Animated Background -->
+<div class="bg-animation">
+
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+
+</div>
+
+<!-- Navigation -->
+
+<nav>
+    <div class="logo">
+        <i class="bi bi-robot"></i>
+        AI Sentiment
+    </div>
+
+    <div class="status">
+        <span class="dot"></span>
+        AI Online
+    </div>
+</nav>
+
+<!-- Main -->
+
+<main class="container">
+
+    <!-- Left Side -->
+    <section class="left" data-aos="fade-right">
+        <h1>
+            Analyze Human Emotions
+        </h1>
+        <p>
+            Discover whether your text is Positive, Negative or Neutral using Artificial Intelligence.
+        </p>
+
+        <form method="POST">
+                <textarea
+                        name="text_input"
+                        placeholder="Write your review, feedback, tweet, message or anything..."
+                        required>{{ text }}</textarea>
+            <button type="submit">
+                <i class="bi bi-stars"></i>
+                Analyze Sentiment
+            </button>
+        </form>
+    </section>
+
+    <!-- Right Side -->
+
+    <section class="right" data-aos="fade-left">
+
+        {% if sentiment %}
+        <!-- Gauge -->
+        <div class="card gauge-card">
+            <h3>Sentiment Strength</h3>
+            <div class="meter">
+                <div class="needle" id="needle"></div>
+                <div class="center-circle">
+                    <h2 id="score">{{ confidence }}%</h2>
+                    <h4>{{ sentiment }}</h4>
+                    <small>
+                        {% if confidence >= 70 %}
+                        Strong Emotion
+                        {% elif confidence >= 40 %}
+                        Moderate Emotion
+                        {% else %}
+                        Mild Emotion
+                        {% endif %}
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="meter-labels">
+                <span class="neg">Negative</span>
+                <span class="neu">Neutral</span>
+                <span class="pos">Positive</span>
+            </div>
+        </div>
+
+        <!-- Result -->
+
+        <div class="card result-card">
+            <h2>
+                {% if sentiment=="Positive" %}
+                😊 Positive
+                {% elif sentiment=="Negative" %}
+                😡 Negative
+                {% else %}
+                😐 Neutral
+                {% endif %}
+            </h2>
+
+            <div class="stats">
+                <div class="stat">
+                    <h4>Positive</h4>
+                    <p>{{ positive }}%</p>
+                </div>
+                <div class="stat">
+                    <h4>Neutral</h4>
+                    <p>{{ neutral }}%</p>
+                </div>
+
+                <div class="stat">
+                    <h4>Negative</h4>
+                    <p>{{ negative }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics -->
+
+        <div class="analytics">
+            <div class="box">
+                <i class="bi bi-emoji-smile"></i>
+                <h3>{{ polarity }}</h3>
+                <p>Polarity</p>
+            </div>
+
+            <div class="box">
+                <i class="bi bi-chat-square-text"></i>
+                <h3>{{ subjectivity }}</h3>
+                <p>Subjectivity</p>
+            </div>
+
+            <div class="box">
+                <i class="bi bi-file-earmark-word"></i>
+                <h3>{{ words }}</h3>
+                <p>Words</p>
+            </div>
+
+            <div class="box">
+                <i class="bi bi-fonts"></i>
+                <h3>{{ characters }}</h3>
+                <p>Characters</p>
+            </div>
+        </div>
+
+        <div class="summary-cards">
+            <div class="summary">
+                <h3>{{ total_sentences }}</h3>
+                <p>Total Sentences</p>
+            </div>
+
+            <div class="summary">
+                <h3>{{ positive_count }}</h3>
+                <p>Positive</p>
+            </div>
+
+            <div class="summary">
+                <h3>{{ neutral_count }}</h3>
+                <p>Neutral</p>
+            </div>
+
+            <div class="summary">
+                <h3>{{ negative_count }}</h3>
+                <p>Negative</p>
+            </div>
+        </div>
+
+        <div class="box">
+            <i class="bi bi-list-check"></i>
+            <h3>{{ total_sentences }}</h3>
+            <p>Sentences</p>
+        </div>
+
+        <!-- AI Insight -->
+        <div class="card">
+            <h2>
+                📝 Sentence-wise Analysis
+            </h2>
+
+            {% for item in sentence_analysis %}
+            <div class="sentence-card">
+                <div class="sentence-top">
+                    <div>
+                        {{ item.emoji }}
+                        <strong style="color:{{ item.color }}">
+                            {{ item.label }}
+                        </strong>
+                    </div>
+                    <div>
+                        Score :
+                        {{ item.score }}
+                    </div>
+                </div>
+
+                <p>
+                    {{ item.sentence }}
+                </p>
+            </div>
+            {% endfor %}
+=
+        </div>
+
+        <div class="card insight">
+            <h3>
+                <i class="bi bi-lightbulb"></i>
+                AI Insight
+            </h3>
+
+            <p>
+                {{ insight }}
+            </p>
+            <hr>
+            <p>
+                <b>Overall Sentiment:</b>
+                {{ sentiment }}
+            </p>
+
+            <p>
+                <b>Sentence Distribution:</b>
+                {{ positive_count }} Positive •
+                {{ neutral_count }} Neutral •
+                {{ negative_count }} Negative
+            </p>
+        </div>
+
+        {% else %}
+
+        <div class="welcome">
+            <i class="bi bi-cpu-fill"></i>
+            <h2>
+                AI Ready
+            </h2>
+
+            <p>
+                Enter some text and click
+                <strong>
+                    Analyze Sentiment
+                </strong>
+                to generate an intelligent sentiment report.
+            </p>
+        </div>
+        {% endif %}
+    </section>
+</main>
+
+<!-- Footer -->
+
+<footer>
+    Powered by Flask • TextBlob • Artificial Intelligence
+</footer>
+
+<!-- Scripts -->
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+    AOS.init({
+        duration: 900,
+        once: true
+    });
+</script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>
