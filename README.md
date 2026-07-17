@@ -219,9 +219,9 @@ python -m textblob.download_corpora
 
 MCA Student | Python Developer | Full Stack Developer | AI & Machine Learning Enthusiast
 
-GitHub: https://github.com/your-username
+GitHub: https://github.com/ShrutiMahajann
 
-LinkedIn: https://www.linkedin.com/in/your-profile/
+LinkedIn:https://www.linkedin.com/in/shruti-mahajan-3b9b38262/
 
 ---
 
